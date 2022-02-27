@@ -1,0 +1,138 @@
+package stepDefinition;
+import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
+//
+Scenario 1: Verify that a valid journey can be planned using the widget.
+
+public class stepDefinition {
+WebDriver dr;
+@Given("^navigate to TFL page$")
+public void navigate_to_home_page() throws Throwable{
+       dr=new ChromeDriver();
+	   dr.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+       dr.get("https://tfl.gov.uk/");         
+       }
+@When ("^user select the journey details using valid locations listed in From textfield as \"(.*)\" and To textfield as \"(.*)\"$")
+public void input_valid_data(String From,String To) throws Throwable{
+       dr.findElement(By.xpath("//*[@id='InputFrom']")).sendKeys(London Bridge);
+       dr.findElement(By.xpath("//*[@id='InputTo']")).sendKeys(Glassgow);
+       dr.findElement(By.xpath("//*[@id='plan-journey-button']")).click();
+       }
+@Then("^Journey Details page should be displayed$")
+public void verifySuccessful() throws Throwable{
+      String expectedText="Journey results";
+      String actualText= dr.findElement(By.xpath("//*[@id='full-width-content']/div/div/div/h1/span")).getText();
+      Assert.assertTrue("Login is successful",expectedText.equals(actualText));
+      }
+	  
+}
+
+//Scenario 2: Verify that the widget is unable to provide results when an invalid journey is planned. 
+
+@Given("^The details of the input field 'From' or 'To' are Invalid$")
+public void navigate(){
+       dr=new ChromeDriver();
+       dr.get("https://tfl.gov.uk/");         
+       }
+@When ("^user selects journey details using any nonlisted location From list category as \"(.*)\" and To textfield as \"(.*)\"$")
+public void input invalid data(String From,String To){
+       dr.findElement(By.xpath("//*[@id='InputFrom']")).sendKeys("XYZ");
+       dr.findElement(By.xpath("//*[@id='InputTo']")).sendKeys("*");
+       dr.findElement(By.xpath("//*[@id='plan-journey-button']")).click();
+       dr.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+       }
+@Then("^Journey Details is Invalid$")
+public void verifyInvalidSearchResults(){
+      String expectedText="Sorry, we can't find a journey matching your criteria";
+      String actualText= dr.findElement(By.xpath("//div[contains(@class, 'r ajax-response')]/ul[@class='field-validation-errors']/li[1]")).getText();
+      Assert.assertTrue("result is invalid",expectedText.notequals(actualText));
+	  
+}
+}
+// Scenario 3: Verify that the widget is unable to plan a journey if no locations are entered into the widget. 
+
+@Given("^The details of the input field 'From' and 'To' are blank$")
+public void navigate(){
+       dr=new ChromeDriver();
+       dr.get("https://tfl.gov.uk/");         
+       }
+@When ("^user select the journey details using blank location in From textfield as \"(.*)\" and To textfield as \"(.*)\"$")
+public void input_blank_data(String From,String To){
+       dr.findElement(By.xpath("//*[@id='plan-journey-button']")).click();
+       dr.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+       }
+@Then("^Error message should be displayed for From textbox$")
+public void verifyUnSuccessful(){
+      String expectedText="Journey results";
+      String actualText= dr.findElement(By.xpath("//*[@id='InputFrom-error']")).getText();
+      Assert.assertTrue("The From field is required.",expectedText.equals(actualText));
+      }
+	  
+@Then("^Error message should be displayed for To textbox$")
+public void verifyUnSuccessful(){
+      String expectedText="Journey results";
+      String actualText= dr.findElement(By.xpath("//*[@id='InputTo-error']")).getText();
+      Assert.assertTrue("The To field is required.",expectedText.equals(actualText));
+      }	  
+	  
+}
+
+//Scenario 4: On the Journey results page, verify that a journey can be amended by using the “Edit Journey” button.
+
+public class stepDefinition {
+WebDriver dr;
+@Given("^navigate to TFL page$")
+public void navigate_to_home_page() throws Throwable{
+       dr=new ChromeDriver();
+	   dr.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+       dr.get("https://tfl.gov.uk/");         
+       }
+@When ("^user select the journey details using valid location in From textfield as \"(.*)\" and To textfield as \"(.*)\"$")
+public void input_valid_data(String From,String To) throws Throwable{
+       dr.findElement(By.xpath("//*[@id='InputFrom']")).sendKeys(London Bridge);
+       dr.findElement(By.xpath("//*[@id='InputTo']")).sendKeys(Glassgow);
+       dr.findElement(By.xpath("//*[@id='plan-journey-button']")).click();
+       }
+@Then("^Journey Details page should be displayed$")
+public void verifySuccessful() throws Throwable{
+      String expectedText="Journey results";
+      String actualText= dr.findElement(By.xpath("//*[@id='full-width-content']/div/div/div/h1/span")).getText();
+      Assert.assertTrue("Login is successful",expectedText.equals(actualText));
+      }
+	  
+@Then("^User should be redirected to Journey results page")
+public void edit_journey() throws Throwable{
+	dr.findElement(By.xpath("//a [contains(., 'Edit journey')]")).click();
+	String expectedText="Journey results";
+	String actualText= dr.findElement(By.xpath("//*[@id='full-width-content']/div/div/div/h1/span")).getText();
+      Assert.assertTrue("User should be able to redirect to Journey results page",expectedText.equals(actualText));
+	
+}
+
+//Scenario 5: Verify that the “Recents” tab on the widget displays a list of recently planned journeys. 
+
+public class stepDefinition {
+WebDriver dr;
+@Given("^navigate to TFL page$")
+public void navigate_to_home_page() throws Throwable{
+       dr=new ChromeDriver();
+	   dr.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+       dr.get("https://tfl.gov.uk/");         
+       }
+@When ("^user select the Recents tab on widget")
+public void verify_recents_journey() throws Throwable{
+       dr.findElement(By.xpath("//div[@id='recent-journeys']//a [contains(text()[1], 'Recents')]")).click();
+       }
+@Then("^Journey Details page should be displayed$")
+public void verifyRecentJourney() throws Throwable{
+      String expectedText="You currently have no recent journeys";
+      String actualText= dr.findElement(By.xpath("//div[@id='jpw-medlarge']//a [contains(text()[1], 'Recents')]")).getText();
+      Assert.assertTrue("Recent Journey displayed",expectedText.equals(actualText));
+      }
