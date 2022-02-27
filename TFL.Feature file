@@ -1,0 +1,42 @@
+Feature: TFL Home Page with valid details
+@selenium
+Scenario: Plan Journey widget test for TFL using valid details.
+
+Given navigate to TFL Home page
+When user enters values in From textbox as "London" and To textbox as "Glassgow"
+Then Plan Journey page should be displayed
+
+Feature: Plan Journey page with invalid details
+@selenium
+Scenario: Plan Journey widget test for TFL using invalid details.
+
+Given navigate to TFL Home page
+When user enters values in From textbox as "XYZ" and To textbox as "*"
+Then Plan Journey page should displayed error as 'Sorry, we can't find a journey matching your criteria'
+
+Feature: Plan Journey page with blank details
+@selenium
+Scenario: Plan Journey widget test for TFL using blank details in From and To textbox.
+
+Given navigate to TFL Home page
+When user enters values in From textbox as "" and To textbox as ""
+Then Plan Journey page should displayed error as 'The From field is required.' and 'The To field is required.'
+Then Error message should be displayed for 'To' textbox.
+
+Feature: Plan Journey page with edit journey button
+@selenium
+Scenario: Plan Journey widget test for TFL using edit Journey button.
+
+Given navigate to TFL Home page
+When user enters values in From textbox as "London" and To textbox as "Glassgow"
+Then Plan Journey page should be displayed
+Then User should be able to edit the journey using Edit Journey button
+
+Feature: Recents Journey Page
+@selenium
+Scenario: Recents Journey page show the journey details using Recents button.
+
+Given navigate to TFL Home page
+When user click Recents button 
+Then Recents journey page should be displayed
+Then User should be able to see the recents journey using Recents button
